@@ -52,7 +52,8 @@
           "InstancePort" : "80",
           "Protocol": "HTTP"
         }],
-        "AvailabilityZones" : { "Fn::GetAZs" : "" }
+        "AvailabilityZones" : { "Fn::GetAZs" : "" },
+        "SecurityGroups": [{"Ref": "SecurityGroup"}]
       }
     },
     
@@ -68,7 +69,7 @@
       "Type" : "AWS::EC2::Instance",
       "Properties" : {
         "InstanceType" : { "Ref" : "InstanceType" },
-        "SecurityGroups" : [ { "Ref" : "InstanceSecurityGroup" } ],
+        "SecurityGroups" : [ { "Ref" : "SecurityGroup" } ],
         "Tags": [
             {"Key": "Name", "Value": "TestJsonStack"}
         ],
