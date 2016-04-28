@@ -35,31 +35,77 @@
   
 
   "Resources" : {
-    "ELBSG": {
-        
-    },
-      
     "BasicELB": {
-        "Type": "AWS::ElasticLoadBalancing::LoadBalancer"
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties": {
+        "LoadBalancerName": "BasicELB",
+        "CrossZone": "true",
+        "HealthCheck": {
+          "HealthyThreshold": "5",
+          "Interval": "10",
+          "Target": "HTTP",
+          "Timeout": "60",
+          "UnhealthyThreshold": "2"
+        },
+        "Listeners": {
+          "LoadBalancerPort": "80",
+          "instanceport" : "80",
+          "Protocol": "HTTP"
+        },
+        "AvailabilityZones" : { "Fn::GetAZs" : "" }
+      }
     },
     
-    "InstanceProfile" : {
+    "InstanceProfile": {
       "Type" : "AWS::IAM::InstanceProfile",
       "Properties" : {
-        "Path" : "/",
+        "Path": "/",
         "Roles" : ["S3-access"]
       }
     },
     
+    "EC2Instance" : {
+      "Type" : "AWS::EC2::Instance",
+      "Properties" : {
+        "InstanceType" : { "Ref" : "InstanceType" },
+        "SecurityGroups" : [ { "Ref" : "InstanceSecurityGroup" } ],
+        "Tags": [
+            {"Key": "Name", "Value": "TestJsonStack"}
+        ],
+        "KeyName" : { "Ref" : "KeyName" },
+        "ImageId" : {"Ref": "AmiId"},
+        "IamInstanceProfile": { "Ref" : "InstanceProfile" }
+      }
+    },
+
+    "InstanceSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Enable SSH access via port 22",
+        "SecurityGroupIngress" : [ {
+          "IpProtocol" : "tcp",
+          "FromPort" : "22",
+          "ToPort" : "22",
+          "CidrIp" : "0.0.0.0/0"
+        } ]
+      }
+    },
+    
     "BasicLaunchConfig": {
-        "Type" : "AWS:AutoScaling::LaunchConfiguration",
+        "Type" : "AWS::AutoScaling::LaunchConfiguration",
         "Properties" : {
             "AssociatePublicIpAddress": "true",
+
             "IamInstanceProfile": {"Ref": "InstanceProfile"},
+
             "InstanceType" : {"Ref": "InstanceType"},
+
             "ImageId" : {"Ref": "AmiId"},
+
             "KeyName" : {"Ref": "KeyName"},
+
             "SecurityGroups": [{"Ref": "SecurityGroup"}],
+
             "UserData" : { "Fn::Base64" : { "Fn::Join": ["", [
                 "#!/bin/bash \n",
                 "sudo yum update -y \n",
@@ -68,10 +114,6 @@
                 ]]} 
              }
         }
-    },
-    
-    "BasicAutoScalingGroup": {
-        
     }
   }
 }
