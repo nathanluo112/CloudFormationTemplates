@@ -42,16 +42,16 @@
         "CrossZone": "true",
         "HealthCheck": {
           "HealthyThreshold": "5",
-          "Interval": "10",
-          "Target": "HTTP",
-          "Timeout": "60",
-          "UnhealthyThreshold": "2"
+          "Interval": "60",
+          "Target": "HTTP:80/",
+          "Timeout": "10",
+          "UnhealthyThreshold": "3"
         },
-        "Listeners": {
+        "Listeners": [{
           "LoadBalancerPort": "80",
-          "instanceport" : "80",
+          "InstancePort" : "80",
           "Protocol": "HTTP"
-        },
+        }],
         "AvailabilityZones" : { "Fn::GetAZs" : "" }
       }
     },
