@@ -68,7 +68,7 @@
       "Type" : "AWS::EC2::Instance",
       "Properties" : {
         "InstanceType" : { "Ref" : "InstanceType" },
-        "SecurityGroups" : [ { "Ref" : "InstanceSecurityGroup" } ],
+        "SecurityGroups" : [ { "Ref" : "SecurityGroup" } ],
         "Tags": [
             {"Key": "Name", "Value": "TestJsonStack"}
         ],
@@ -114,6 +114,13 @@
                 ]]} 
              }
         }
+    }
+  },
+  
+  "Outputs": {
+    "SGID": {
+      "Description": "Security Group ID",
+      "Value": {"Fn::GetAtt" : [ "InstanceSecurityGroup", "GroupId"]}
     }
   }
 }
