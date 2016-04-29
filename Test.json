@@ -52,8 +52,7 @@
           "InstancePort" : "80",
           "Protocol": "HTTP"
         }],
-        "AvailabilityZones" : { "Fn::GetAZs" : "" },
-        "SecurityGroups": [{"Ref": "SecurityGroup"}]
+        "AvailabilityZones" : { "Fn::GetAZs" : "" }
       }
     },
     
@@ -115,6 +114,13 @@
                 ]]} 
              }
         }
+    }
+  },
+  
+  "Outputs": {
+    "SGID": {
+      "Description": "Security Group ID",
+      "Value": {"Fn::GetAtt" : [ "InstanceSecurityGroup", "GroupId"]}
     }
   }
 }
